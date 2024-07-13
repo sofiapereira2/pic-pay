@@ -16,3 +16,9 @@ class TypeSchema(Schema):
 class TypeUserSchema(Schema):
     user: UserSchema
     type_user: TypeSchema
+
+
+class UserLoginSchema(ModelSchema):
+    class Meta:
+        model = User
+        fields = ['username', 'password']

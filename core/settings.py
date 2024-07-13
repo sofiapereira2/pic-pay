@@ -140,3 +140,8 @@ Q_CLUSTER = {
     'retry': 300,
     'orm': 'default',
 }
+
+
+# ACCESS TOKEN EXPIRATION
+ACCESS_TOKEN_EXPIRE = 30
+SECRET_KEY_JWT = SECRET_KEY

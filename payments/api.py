@@ -9,24 +9,27 @@ import requests
 from django.conf import settings
 from django_q.tasks import async_task
 from .tasks import send_notification
-
+from core.auth import JWTAuth
 
 payments_router = Router()
 
 
-@payments_router.post('/', response={200: dict,
-                                     400: dict,
-                                     403: dict})
+@payments_router.post('/',
+                      response={200: dict,
+                                400: dict,
+                                403: dict},
+                      auth=JWTAuth())
 def transaction(request, transaction: TransactionSchema):
     print(transaction)
-    payer = get_object_or_404(User, id=transaction.payer)
-    payee = get_object_or_404(User, id=transaction.payee)
+    payer = get_object_or_404(User, id=transaction.payer_id)
+    payee = get_object_or_404(User, wallet_id=transaction.wallet_id)
 
     if payer.amount < transaction.amount:
         return 400, {'error': 'Saldo insuficiente'}
 
     if not has_permission(payer, 'make_transfer'):
-        return 403, {'error': 'Voce não possui permissão para realizar transferencias'}
+        return 403, {'error': 'Voce não possui permissão para realizar'
+                     'transferencias'}
 
     if not has_permission(payee, 'receive_transfer'):
         return 403, {'error': 'O usuario nao pode receber transferencias'}
@@ -37,8 +40,8 @@ def transaction(request, transaction: TransactionSchema):
 
         transact = Transactions(
             amount=transaction.amount,
-            payer_id=transaction.payer,
-            payee_id=transaction.payee,
+            payer_id=transaction.payer_id,
+            payee_id=payee.id,
         )
         payer.save()
         payee.save()

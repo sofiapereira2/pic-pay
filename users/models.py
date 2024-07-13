@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .validators import validate_cpf
+from secrets import token_hex
 
 
 class User(AbstractUser):
@@ -10,9 +11,13 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     amount = models.DecimalField(max_digits=15, decimal_places=2,
                                  default=Decimal('0.00'))
+    wallet_id = models.CharField(max_length=14, unique=True, null=True,
+                                 blank=True)
 
     def save(self, *args, **kwargs):
         self.cpf = self.cpf.replace('.', '').replace('-', '')
+        if not self.wallet_id:
+            self.wallet_id = self.generate_wallet_id()
         super(User, self).save(*args, **kwargs)
 
     def pay(self, value: Decimal):
@@ -26,3 +31,10 @@ class User(AbstractUser):
             raise TypeError('Value must be a Decimal')
 
         self.amount += value
+
+    def generate_wallet_id(self):
+        while True:
+            new_wallet_id = token_hex(10)
+            exists = User.objects.filter(wallet_id=new_wallet_id)
+            if not exists:
+                return new_wallet_id
