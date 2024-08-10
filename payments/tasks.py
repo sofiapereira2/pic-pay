@@ -1,2 +1,2 @@
 def send_notification(payer, payee, amount):
-    print(f'{payer} enviou um pagamento para {payee} no valor de {amount}')
+    print(f'{payer} sent a payment to {payee} worth {amount}')

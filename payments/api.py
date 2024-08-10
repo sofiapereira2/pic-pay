@@ -25,14 +25,14 @@ def transaction(request, transaction: TransactionSchema):
     payee = get_object_or_404(User, wallet_id=transaction.wallet_id)
 
     if payer.amount < transaction.amount:
-        return 400, {'error': 'Saldo insuficiente'}
+        return 400, {'error': 'Insufficient balance'}
 
     if not has_permission(payer, 'make_transfer'):
-        return 403, {'error': 'Voce não possui permissão para realizar'
-                     'transferencias'}
+        return 403, {'error': 'You do not have permission to perform'
+                     'transfers'}
 
     if not has_permission(payee, 'receive_transfer'):
-        return 403, {'error': 'O usuario nao pode receber transferencias'}
+        return 403, {'error': 'This user cannot receive transfers'}
 
     with django_transaction.atomic():
         payer.pay(transaction.amount)

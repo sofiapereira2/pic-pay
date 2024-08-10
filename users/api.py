@@ -29,7 +29,7 @@ def create_user(request, type_user_schema: TypeUserSchema):
         print(e.message_dict)
         return 400, {'errors': e.message_dict}
     except Exception as e:
-        return 500, {'errors': f'Erro interno do servidor: {e}'}
+        return 500, {'errors': f'Internal Server Error: {e}'}
 
     return {'user_id': user.id}
 
