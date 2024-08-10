@@ -1,5 +1,5 @@
 # pic-pay
-Pic-pay is a digital wallet that allows transfers between users. This is a small backend pic-pay project. <Frontend side is yet to come>
+Pic-pay is a digital wallet that allows transfers between users. This is a small backend pic-pay project. The front end side is yet to come.
 
 ## Components
 
