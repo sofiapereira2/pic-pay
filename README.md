@@ -25,3 +25,7 @@ http://localhost:8000/api/users/login/
 ```
 http://localhost:8000/api/payments/
 ```
+
+```
+http://localhost:8000/api/docs
+```
